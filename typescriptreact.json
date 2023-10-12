@@ -1,0 +1,89 @@
+{
+	// Place your snippets for typescriptreact here. Each snippet is defined under a snippet name and has a prefix, body and
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"New React Component": {
+		"prefix": ["r.component"],
+		"description": "Scaffold for a new React component"
+		"body": [
+			"import React from 'react';",
+			"",
+			"const ${TM_FILENAME_BASE} = ({ children }: React.PropsWithChildren) => {",
+  		"  return <>{children}</>;",
+		  "};",
+			"",
+			"export { ${TM_FILENAME_BASE} };",
+			"",
+		],
+	},
+
+	"New React Context": {
+		"prefix": ["r.context"],
+		"description": "Scaffold for a new React context provider"
+		"body": [
+			"import React from 'react';",
+			"import type { Draft } from 'immer';",
+			"import { useImmerReducer } from 'use-immer';",
+			"",
+			"type State = { value: string };",
+			"",
+			"type Action = { type: `SET_VALUE`; value: State[`value`] };",
+			"",
+			"const reducer = (draft: Draft<State>, action: Action) => {",
+  		"  switch (action.type) {",
+			"    case `SET_VALUE`:",
+      "      draft.value = action.value;",
+      "      break;",
+			"",
+			"    /* no default */",
+  		"  }",
+			"};",
+			"",
+			"type ContextType = State & {",
+  		"  dispatch: React.Dispatch<Action>;",
+			"};",
+			"",
+			"const ${TM_FILENAME_BASE} = React.createContext({} as ContextType | undefined);",
+			"",
+			"const ${TM_FILENAME_BASE}Provider = ({ children }: React.PropsWithChildren) => {",
+  		"  const [state, dispatch] = useImmerReducer(reducer, {",
+      "    value: ``,",
+  		"  } as State);",
+			"",
+  		"  const context = React.useMemo(",
+    	"    () => ({",
+      "      ...state,",
+      "      dispatch,",
+    	"    }),",
+    	"    [dispatch, state],",
+      "  );",
+			"",
+  		"  return <${TM_FILENAME_BASE}.Provider value={context}>{children}</${TM_FILENAME_BASE}.Provider>;",
+		  "};",
+			"",
+			"const use${TM_FILENAME_BASE} = () => {",
+  		"  const context = React.useContext(${TM_FILENAME_BASE});",
+			"",
+  		"  if (context === undefined) {",
+    	"    throw new Error(`use${TM_FILENAME_BASE} must be used within a ${TM_FILENAME_BASE}Provider`);",
+  		"  }",
+			"",
+  		"  return context;",
+			"};",
+			"",
+			"export { ${TM_FILENAME_BASE}Provider, use${TM_FILENAME_BASE} };",
+			"",
+		],
+	}
+}
